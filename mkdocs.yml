@@ -1,0 +1,109 @@
+site_name: SRE 知识库
+site_description: >-
+  《SRE：Google 运维解密（第2版）》深度摘要知识库 —— 每章核心概念、
+  关键论点、实践要点与交互式脑图
+site_author: wangtianqing
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep red
+      toggle:
+        icon: material/brightness-7
+        name: 切换到暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep red
+      toggle:
+        icon: material/brightness-4
+        name: 切换到亮色模式
+  icon:
+    logo: material/book-open-variant
+
+plugins:
+  - search:
+      lang: zh
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji
+  - tables
+  - toc:
+      permalink: "#"
+      toc_depth: 2-3
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - 首页: index.md
+  - 导读: guide.md
+  - Ⅰ 背景与脉络:
+      - part1/index.md
+      - 第1章 绪论: part1/ch01.md
+      - 第2章 可靠性的商业价值: part1/ch02.md
+      - 第3章 生产环境的演进趋势: part1/ch03.md
+  - Ⅱ 社会技术基石:
+      - part2/index.md
+      - 第4章 文化土壤: part2/ch04.md
+      - 第5章 招聘与职业发展: part2/ch05.md
+      - 第6章 组织架构: part2/ch06.md
+      - 第7章 协作模式: part2/ch07.md
+  - Ⅲ 态势感知与备战:
+      - part3/index.md
+      - 第8章 SLO: part3/ch08.md
+      - 第9章 可观测性与监控: part3/ch09.md
+      - 第10章 应急与轮值: part3/ch10.md
+      - 第11章 从事故中学习: part3/ch11.md
+      - 第12章 STPA 与 CAST: part3/ch12.md
+  - Ⅳ 基础设施设计:
+      - part4/index.md
+      - 第13章 自动化与工具: part4/ch13.md
+      - 第14章 测试: part4/ch14.md
+      - 第15章 容量规划: part4/ch15.md
+      - 第16章 数据管理: part4/ch16.md
+  - Ⅴ 韧性与平台:
+      - part5/index.md
+      - 第17章 面向韧性的系统设计: part5/ch17.md
+      - 第18章 平台工程: part5/ch18.md
+  - Ⅵ 展望:
+      - part6/index.md
+      - 第19章 转折点上的 SRE: part6/ch19.md
+      - 第20章 SRE 赋能 AI: part6/ch20.md
+      - 第21章 AI 赋能 SRE: part6/ch21.md
+      - 第22章 多样化环境实践: part6/ch22.md
+      - 第23章 SRE 的未来: part6/ch23.md
+  - 附录:
+      - appendices/index.md
+      - 附录A 培训ROI: appendices/appendix-a.md
+      - 附录B 章程模板: appendices/appendix-b.md
+      - 附录C 会议纪要: appendices/appendix-c.md
+      - 附录D gShoe章程: appendices/appendix-d.md
+      - 附录E 组合SLO数学: appendices/appendix-e.md
+      - 附录F 延迟告警数学: appendices/appendix-f.md
+      - 附录G 可观测性统计: appendices/appendix-g.md
+
+site_url: https://forceinjection.github.io/google-sre-book/
+repo_url: https://github.com/ForceInjection/google-sre-book
+repo_name: ForceInjection/google-sre-book
