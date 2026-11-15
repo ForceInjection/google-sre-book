@@ -1,0 +1,2309 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="《SRE：Google 运维解密（第2版）》深度摘要知识库 —— 每章核心概念、 关键论点、实践要点与交互式脑图">
+      
+      
+        <meta name="author" content="wangtianqing">
+      
+      
+        <link rel="canonical" href="https://forceinjection.github.io/google-sre-book/part4/ch15/">
+      
+      
+        <link rel="prev" href="../ch14/">
+      
+      
+        <link rel="next" href="../ch16/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>第15章 · 容量规划：需求预测、Flex 资源池化与 AI 时代扩展 - SRE 知识库</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-red" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="SRE 知识库" class="md-header__button md-logo" aria-label="SRE 知识库" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SRE 知识库
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第15章 · 容量规划：需求预测、Flex 资源池化与 AI 时代扩展
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-red" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-red" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ForceInjection/google-sre-book" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ForceInjection/google-sre-book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part1/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅰ 背景与脉络
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part2/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅱ 社会技术基石
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part3/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅲ 态势感知与备战
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅳ 基础设施设计
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part5/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅴ 韧性与平台
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part6/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅵ 展望
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../appendices/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  附录
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SRE 知识库" class="md-nav__button md-logo" aria-label="SRE 知识库" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg>
+
+    </a>
+    SRE 知识库
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ForceInjection/google-sre-book" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ForceInjection/google-sre-book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    首页
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    导读
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part1/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅰ 背景与脉络
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅰ 背景与脉络
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/ch01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第1章 绪论
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/ch02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第2章 可靠性的商业价值
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/ch03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第3章 生产环境的演进趋势
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part2/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅱ 社会技术基石
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅱ 社会技术基石
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第4章 文化土壤
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第5章 招聘与职业发展
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第6章 组织架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第7章 协作模式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part3/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅲ 态势感知与备战
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅲ 态势感知与备战
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/ch08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第8章 SLO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/ch09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第9章 可观测性与监控
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/ch10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第10章 应急与轮值
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/ch11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第11章 从事故中学习
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/ch12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第12章 STPA 与 CAST
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅳ 基础设施设计
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅳ 基础设施设计
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第13章 自动化与工具
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第14章 测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    第15章 容量规划
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    第15章 容量规划
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      本章脑图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      核心概念
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      关键论点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#covid-19-google-meet" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例研究一：COVID-19 期间的 Google Meet
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例研究二：面向 AI 时代扩展 Google
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      容量规划原则
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践要点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      交叉引用
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第16章 数据管理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part5/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅴ 韧性与平台
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅴ 韧性与平台
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part5/ch17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第17章 面向韧性的系统设计
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part5/ch18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第18章 平台工程
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part6/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅵ 展望
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅵ 展望
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第19章 转折点上的 SRE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第20章 SRE 赋能 AI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第21章 AI 赋能 SRE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第22章 多样化环境实践
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第23章 SRE 的未来
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../appendices/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    附录
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            附录
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录A 培训ROI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录B 章程模板
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录C 会议纪要
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录D gShoe章程
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录E 组合SLO数学
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-f/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录F 延迟告警数学
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-g/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录G 可观测性统计
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      本章脑图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      核心概念
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      关键论点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#covid-19-google-meet" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例研究一：COVID-19 期间的 Google Meet
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例研究二：面向 AI 时代扩展 Google
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      容量规划原则
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践要点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      交叉引用
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="15-flex-ai">第15章 · 容量规划：需求预测、Flex 资源池化与 AI 时代扩展<a class="headerlink" href="#15-flex-ai" title="Permanent link">#</a></h1>
+<blockquote>
+<p>[!INFO] 出处
+《SRE：Google 运维解密（第2版）》第Ⅳ部分 · 第15章 · 撰稿：Andy Gordon、Chris Kirby、David Hixon、Dice Ephemera、Frank Szczerba、Jessica McCarthy、Katie Poskaitis、Nick Soda、Rob Whitaker、Samantha Schaevitz、Sierra Ventuleth、Stephanie Yan、Thais Melo 与 Thomas Voß（合著：Carmela Quinito）</p>
+</blockquote>
+<p><strong>一句话概括</strong>：容量规划是在性能、成本、可靠性"铁三角"之间做权衡的工程学科——先用概率化需求预测驱动供给规划，再以流量打标、负载卸载与 Flex 资源池化化解过载，最后借 COVID 期间 Google Meet 与 AI 时代扩展两大案例检验全套方法论。</p>
+<h2 id="_1">本章脑图<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<div id="map-part4-ch15-md" style="width:100%;height:260px;"></div>
+
+<script src="../../js/echarts.min.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('map-part4-ch15-md');
+  if (!el || typeof echarts === 'undefined') return;
+  var data = {"name":"Ch15 容量规划","symbolSize":13,"children":[{"name":"要不要做","symbolSize":8,"children":[{"name":"云弹性+过度调配","symbolSize":5},{"name":"规模增长定投入","symbolSize":5}]},{"name":"核心概念","symbolSize":8,"children":[{"name":"需求预测三分类","symbolSize":5},{"name":"概率化预测 p95","symbolSize":5},{"name":"内在产品指标","symbolSize":5},{"name":"供给规划 PoR","symbolSize":5}]},{"name":"韧性与风险设计","symbolSize":8,"children":[{"name":"流量打标关键度","symbolSize":5},{"name":"容量隔离故障域","symbolSize":5},{"name":"负载卸载需求塑造","symbolSize":5},{"name":"溃缩区退化轮廓","symbolSize":5}]},{"name":"优化与资源效率","symbolSize":8,"children":[{"name":"聚合峰值 vs 峰值和","symbolSize":5},{"name":"Flex 节省5%~20%","symbolSize":5},{"name":"自动扩缩容","symbolSize":5},{"name":"回收搁浅容量","symbolSize":5}]},{"name":"案例 COVID Meet","symbolSize":8,"children":[{"name":"30倍增长日翻倍","symbolSize":5},{"name":"四条工作流","symbolSize":5},{"name":"消瓶颈优雅降级","symbolSize":5},{"name":"自动化与可持续","symbolSize":5}]},{"name":"案例 AI 时代扩展","symbolSize":8,"children":[{"name":"供给受限新常态","symbolSize":5},{"name":"需求整形供给整形","symbolSize":5},{"name":"TPU 端到端优化","symbolSize":5},{"name":"AI Agent 弹性","symbolSize":5}]},{"name":"容量规划原则","symbolSize":8,"children":[{"name":"FinOps 量化","symbolSize":5},{"name":"按服务等级投入","symbolSize":5},{"name":"默认自动化灵活","symbolSize":5}]}]};
+  var COLOR = '#66bb6a';
+  function fg() {
+    var v = getComputedStyle(document.body).getPropertyValue('--md-default-fg-color').trim();
+    return v || 'rgba(0,0,0,0.87)';
+  }
+
+  // 容器高度随展开状态自适应：可见行数 x 行高
+  var ROW = 30, PAD = 46;
+  function markInitial(node, depth) {
+    if (depth >= 2) node.__collapsed = true;
+    if (node.children) node.children.forEach(function (c) { markInitial(c, depth + 1); });
+  }
+  markInitial(data, 0);
+  function visibleRows(node) {
+    if (!node.children || !node.children.length || node.__collapsed) return 1;
+    var s = 0;
+    for (var i = 0; i < node.children.length; i++) s += visibleRows(node.children[i]);
+    return s;
+  }
+  function fit() {
+    var h = Math.max(160, visibleRows(data) * ROW + PAD);
+    if (Math.abs(parseFloat(el.style.height) - h) > 1) {
+      el.style.height = h + 'px';
+      chart.resize();
+    }
+  }
+
+  var chart = echarts.init(el);
+  function render() {
+    chart.setOption({
+      backgroundColor: 'transparent',
+      animation: true,
+      animationDurationUpdate: 220,
+      animationEasingUpdate: 'cubicOut',
+      series: [{
+        type: 'tree',
+        data: [data],
+        layout: 'orthogonal',
+        orient: 'LR',
+        roam: false,
+        expandAndCollapse: true,
+        initialTreeDepth: 1,
+        symbol: 'circle',
+        lineStyle: { width: 1.2, color: COLOR, opacity: 0.55 },
+        itemStyle: { color: COLOR, borderColor: 'transparent' },
+        emphasis: { focus: 'descendant', lineStyle: { width: 2.2 } },
+        label: { color: fg(), fontSize: 12, position: 'right', distance: 6 },
+        right: '22%'
+      }]
+    });
+    fit();
+  }
+  render();
+  chart.on('click', function (p) {
+    var d = p.data;
+    if (d && d.children && d.children.length) d.__collapsed = !d.__collapsed;
+    setTimeout(fit, 300);
+  });
+  chart.on('finished', fit);
+  new MutationObserver(render).observe(document.body, { attributes: true, attributeFilter: ['data-md-color-scheme'] });
+})();
+</script>
+
+<h2 id="_2">核心概念<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>术语（EN）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>容量规划铁三角</td>
+<td>Performance / Cost / Reliability</td>
+<td>三者均须锚定核心业务目标；不为每个统计学极端边缘情况调配容量</td>
+</tr>
+<tr>
+<td>需求预测</td>
+<td>Demand Forecasting</td>
+<td>基于历史数据度量外推未来趋势并预留缓冲；预测总有误差空间</td>
+</tr>
+<tr>
+<td>自然/非自然需求</td>
+<td>Organic / Inorganic Demand</td>
+<td>自然需求随用户与数据自然增长可外推；非自然需求由离散事件驱动，再分计划内与计划外</td>
+</tr>
+<tr>
+<td>官方既定容量计划</td>
+<td>Plan of Record (PoR)</td>
+<td>在无约束基准之上叠加现实约束后的正式容量计划</td>
+</tr>
+<tr>
+<td>供给三问</td>
+<td>Fungibility / Lead Time / Elasticity</td>
+<td>可互换性、交付周期与弹性（向上扩容/向下缩容空间）决定供给的灵活度</td>
+</tr>
+<tr>
+<td>流量打标</td>
+<td>Traffic Tagging</td>
+<td>以关键度（criticality）、容忍延迟（latency tolerant）等标记差异化处理流量</td>
+</tr>
+<tr>
+<td>切走流量</td>
+<td>Draining</td>
+<td>故障状态下把流量重定至其他位置的能力，须经 DiRT 类演练检验</td>
+</tr>
+<tr>
+<td>负载卸载</td>
+<td>Load Shedding</td>
+<td>系统过载时按关键度丢弃低优流量，保障核心服务的可靠性</td>
+</tr>
+<tr>
+<td>需求塑造</td>
+<td>Demand Shaping</td>
+<td>负载均衡转移作业、临时禁用高成本功能等治理手段——治理需求比扩供给更经济</td>
+</tr>
+<tr>
+<td>溃缩区</td>
+<td>Crumple Zone</td>
+<td>预先设计需求超出供给时的退化轮廓（degradation profile）与恢复预案</td>
+</tr>
+<tr>
+<td>共同命运故障</td>
+<td>Shared-Fate Failure</td>
+<td>隔离假设失效，单点故障波及其他资产</td>
+</tr>
+<tr>
+<td>聚合峰值</td>
+<td>Peak of Sums</td>
+<td>按需求汇总后的峰值调配资源（示例中 48 而非 60 单位），远小于各需求独立峰值之和</td>
+</tr>
+<tr>
+<td>搁浅容量</td>
+<td>Stranded Capacity</td>
+<td>已调配却闲置的资源；容忍延迟流量跨区填补低谷即可回收</td>
+</tr>
+<tr>
+<td>Flex</td>
+<td>Flex</td>
+<td>Google 的资源池化系统：配额池 + 上限（ceiling）+ 静态承诺，按聚合峰值供给节省约 5%~20%</td>
+</tr>
+<tr>
+<td>超额认购</td>
+<td>Oversubscription</td>
+<td>依历史使用规律售出超过物理容量的逻辑容量，要求具备售罄韧性（stockout resiliency）</td>
+</tr>
+<tr>
+<td>空间灵活性</td>
+<td>Spatial Flexibility (SF)</td>
+<td>对工作负载做战略性放置、迁移与规模重整的框架与工具，让需求视作流动实体</td>
+</tr>
+<tr>
+<td>最小可行容量</td>
+<td>Minimum Viable Capacity</td>
+<td>分阶段交付：在传统统计计划前数月就让基础算力、电力与网络上线</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">关键论点<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>先决策是否需要这套流程</strong>：若云厂商弹性与适度过度调配足以应对，就把精力放在功能开发上——与工程师时间成本相比，计算资源实在太便宜。</li>
+<li><strong>铁三角锚定业务目标</strong>：正如 100% 正常运行时间并非可靠的合理目标，为每个极端边缘情况调配容量也不明智；必须对明确的风险容忍度做审慎权衡。</li>
+<li><strong>需求三分类决定预测方法</strong>：自然需求用线性回归、Holt-Winters、ARIMA 外推；计划内非自然需求（新功能发布、营销活动、奥运会级事件）纳入发布规划；计划外非自然需求只能靠缓冲容量、自动伸缩与需求塑形。</li>
+<li><strong>量化不确定性</strong>：用 p50/p95/p99 概率化预测代替单点估计，配情景分析（低/预期/高增长）与预测回溯测试；事后总结中还应审视容量预测对事故究竟是诱因还是绊脚石。</li>
+<li><strong>供给绕不开现实约束</strong>：可互换性、交付周期、弹性与上限四大维度决定 PoR；依赖共享动态供给有资源争夺风险，而长期独占供给昂贵且会抹杀云计算红利——技术、合同、产品与财务须同权重决策。</li>
+<li><strong>流量打标是效率杠杆</strong>：延迟敏感流量就近服务，容忍延迟的后台请求可调度到任何闲置容量最充裕之处，从而回收全球搁浅容量、"压平"周期性资源潮汐曲线。</li>
+<li><strong>分区与共享环境是核心权衡</strong>：物理分区以资源成本换简洁与严格隔离；共享环境靠关键度标签效率更高，但要应对吵闹邻居与客户端重试的群集效应。</li>
+<li><strong>溃缩区必须事先定义</strong>：明确退化轮廓——服务会变慢多少、何时开始恶化、会否彻底瘫痪或丢失数据；供养一份应急缓冲资源让系统迅速降温，是争取恢复时间的宝贵策略。</li>
+<li><strong>应对故障规划重在沉淀</strong>：预案的价值在于成为值班时可执行的应急预案；容量扩容自动化彻底去掉了周六凌晨等待人工审批的折磨。</li>
+<li><strong>Flex 的本质是统计学调配</strong>：按聚合峰值供给并仰仗超额认购，同时抑制团队囤积未用资源的冲动；模型失灵时会发生资源售罄（stockout），因此必须具备售罄韧性。</li>
+<li><strong>AI 时代供给受限主导</strong>：问题从"拥有多少绝对容量"变成"能否在正确的时间、正确的地点把容量送给正确的消费者"，需要需求整形与供给整形协同并具备通用互换性。</li>
+<li><strong>SRE 角色升维</strong>：从追踪、收集和解读原始数据的繁琐劳动中解放，转向决策与管理职能——坐上象征系统控制权的"驾驶座"，AI Agent 负责分类初筛与数据聚合。</li>
+</ol>
+<h2 id="covid-19-google-meet">案例研究一：COVID-19 期间的 Google Meet<a class="headerlink" href="#covid-19-google-meet" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>背景反差</strong>：疫情前 Meet 增长完全可预测、稳定到"刻意避免"在自动化与容量优化上投入（ROI 不划算）；2020 年起经历高达 30 倍的暴风式增长，最初几个月使用量有时每天翻番。</li>
+<li><strong>起点</strong>：2020 年 2 月 17 日收到首批亚洲区域容量不足与任务过载告警；随着警频攀升，升级为紧急事态，全团队投入。</li>
+<li><strong>组织方式</strong>：遵循应急事件管理最佳实践，明确角色并组建半独立工作流——容量（从电子表格演进为精密预测模型，并向全 Google 各团队借机器）、依赖项（设定目标扩展倍数，如头像服务须承受 10 倍流量）、瓶颈（消除不必要开销）、控制旋钮（构建"逃生通道"）。</li>
+<li><strong>消除瓶颈</strong>：降低日志写入频率、砍掉每个实例上监控/日志/健康检查的固定开销；将单实例 CPU 与内存配置翻倍，使总实例数减半，大幅提升资源利用效率。</li>
+<li><strong>优雅降级</strong>：与产品团队制定应急预案——供不应求时降低视频或音频质量，甚至关闭视频画面，在危机逼近绝境前主动取舍。</li>
+<li><strong>生产变更</strong>：初期无部署流水线，工程师日夜轮值手工在数十个机房部署；一个月后让容量储备跑赢增长曲线，缩减轮值并补课构建自动化工具。</li>
+<li><strong>可持续性</strong>：截至 5 月中旬部分区域使用量激增达 400 倍；最大风险反而是团队疲惫——关键岗位设备份、重心转回可持续运维，同时保障新用户群体（师生、远程办公）的新功能迭代节奏。</li>
+<li><strong>教训</strong>：超常态危机须突破常规流程；资源弹性与池化（Flex 类系统）价值凸显；必须为突发海量非自然增长预置系统与流程；优先落实容量评估、瓶颈识别、控制旋钮、流量管理与自动伸缩等技术控制；跨职能紧密协作；高度关注人员疲惫；既有成熟容量框架是应急响应的基石。</li>
+</ul>
+<h2 id="ai-google">案例研究二：面向 AI 时代扩展 Google<a class="headerlink" href="#ai-google" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>供给受限成为主旋律</strong>：AI 对 CPU 与硬件加速器的爆发式需求暴露整套技术栈瓶颈——供应链、电网、物理空间与软件扩展极限无一幸免；仅靠资金投入无法根治。</li>
+<li><strong>最小可行容量</strong>：转向分阶段交付，在传统统计计划前数月就让算力、电力与网络上线上线；打破基础设施"已就绪"黑盒，把容忍延迟、对临时短缺有韧性的负载动态路由到早期供给中。</li>
+<li><strong>端到端视角</strong>：自研 TPU 纵向一体化——TPU v8 "Zebrafish" 单 Pod 容纳 9,600 个加速器、性能提升 2~4 倍、能效提升 30%、算力达 121 exaFLOPS；TPU v8 "Sunfish" 单 Pod 可扩至 1,152 芯片、推理延迟降至五分之一；配套"美印互联"海缆、吉瓦级园区与靠近用户的战略选址。</li>
+<li><strong>主动需求整形</strong>：以空间灵活性（SF）在机群中战略性放置、迁移与重整工作负载——解耦物理位置、动态调整占用规模、由主机群管理系统自动触发迁移以防止容量耗尽。</li>
+<li><strong>回收搁浅容量</strong>：优化空间与电力、简化供给重构流程（支撑大功率密度的定制 AI 硬件改造）、在长期规划早期引入空间可行性、以自动化迫回未使用资源。</li>
+<li><strong>AI Agent 弹性</strong>：Agent 自主初筛告警并定位根因、全机群扫描回收闲置 ML 配额、解析自然语言查询做根因分析、主编写功能代码加速基础设施研发迭代；Agent 行为可能出人意料，严格验证与纵深防护安全机制至关重要。</li>
+<li><strong>教训</strong>：从增量式规划转向系统级全局策略——优先需求整形、工作负载与部署解耦、回收搁浅容量、保持端到端视角；AI Agent 扩展的是诊断与工程能力，SRE 稳坐"驾驶座"专注缓解策略与高层决策。</li>
+</ul>
+<h2 id="_4">容量规划原则<a class="headerlink" href="#_4" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>以 FinOps 思维量化</strong>：让容量成本清晰可见——资源成本（运营支出）、工程成本、僵化成本（无法迁移扩容的机会成本）与不可靠成本（违反 SLO），以 ROI 审视所有容量项目。</li>
+<li><strong>按服务等级匹配投入</strong>：大型核心服务值得复杂建模与详尽预测；规模较小的服务更适合共享缓冲池等简单方法。</li>
+<li><strong>默认推行自动化</strong>：依既定策略与实时需求动态调整资源占用。</li>
+<li><strong>优先考虑灵活性</strong>：服务应能在可用区、区域甚至云厂商之间灵活迁移，定期重评资源选型。</li>
+<li><strong>以风险锚定可靠性</strong>：基于 SLO 与业务影响确定冗余度与缓冲池大小，面向优雅降级设计。</li>
+<li><strong>维持持续改进的良性循环</strong>：把容量规划视为动态演进的财务工程实践，持续监控遥测数据、分析瓶颈、优化技术栈并审视最初假设。</li>
+<li><strong>促进深入跨界协作</strong>：打破产品研发、SRE 与财务的壁垒，在业务目标、风险承受力与成本效益阈值上保持一致。</li>
+</ol>
+<h2 id="_5">实践要点<a class="headerlink" href="#_5" title="Permanent link">#</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 先评估服务规模、增长与重要性：小服务用云弹性 + 过度调配即可，勿为规划而规划</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 区分自然、计划内与计划外需求，分别用趋势外推、发布规划与缓冲容量/需求塑形应对</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 预测输出概率化（p50/p95/p99），做低增长/预期/高增长情景分析，保留历史预测开展回溯测试</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 内在产品指标与基础设施指标钳钉（如每千名活跃用户消耗的 CPU 核数），对比率突变配置告警</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 流量打标关键度与容忍延迟，把后台请求调度到地球另一端闲置容量，回收全球搁浅容量</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 默认避免单可用区部署；区域冗余应对单区故障，跨区承载前评估网络瓶颈与降级路径</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 预先定义退化轮廓与控制旋钮：负载卸载、流量整形、降音视频质量等逃生通道要在平时演练</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 定期负载测试掌握压力下的系统表现；事故复盘审视容量预测的角色，把教训沉淀为值班预案</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 用聚合峰值池化资源（如 Flex 类系统），同时设计售罄韧性与扩容上限，防止复合服务耗尽基础资源</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 监控团队疲惫：高强度扩张期为关键岗位设置人员备份，危机缓解后主动回归可持续运维机制</li>
+</ul>
+<h2 id="_6">交叉引用<a class="headerlink" href="#_6" title="Permanent link">#</a></h2>
+<ul>
+<li>发布与配置管理 → <a href="../ch13/">第13章</a></li>
+<li>生产测试、负载测试与 DiRT 演练 → <a href="../ch14/">第14章</a></li>
+<li>数据管理与备份恢复成本 → <a href="../ch16/">第16章</a></li>
+<li>SLO 与错误预算 → <a href="../../part3/ch08/">第8章</a></li>
+<li>监控与告警 → <a href="../../part3/ch09/">第9章</a></li>
+<li>风险管理与容灾规划 → <a href="../../part5/ch17/">第17章</a></li>
+<li>平台工程与统一抽象 → <a href="../../part5/ch18/">第18章</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../ch14/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第14章 测试">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                第14章 测试
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../ch16/" class="md-footer__link md-footer__link--next" aria-label="下一页: 第16章 数据管理">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                第16章 数据管理
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      <span style="font-size:0.75rem">访问计数 <a href="https://hits.sh/forceinjection.github.io/google-sre-book/"><img
+  src="https://hits.sh/forceinjection.github.io/google-sre-book.svg?style=flat-square"
+  alt="Hits" style="vertical-align:middle;margin-left:4px"></a></span>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

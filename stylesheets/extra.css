@@ -1,0 +1,15 @@
+/* 中文长词换行优化 */
+.md-typeset {
+  overflow-wrap: break-word;
+}
+
+/* 术语对照标签样式 */
+.term-tag {
+  font-size: 0.72em;
+  color: var(--md-default-fg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-left: 4px;
+  white-space: nowrap;
+}

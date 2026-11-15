@@ -1,0 +1,2299 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="《SRE：Google 运维解密（第2版）》深度摘要知识库 —— 每章核心概念、 关键论点、实践要点与交互式脑图">
+      
+      
+        <meta name="author" content="wangtianqing">
+      
+      
+        <link rel="canonical" href="https://forceinjection.github.io/google-sre-book/part3/ch09/">
+      
+      
+        <link rel="prev" href="../ch08/">
+      
+      
+        <link rel="next" href="../ch10/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>第9章 · 可观测性与监控 - SRE 知识库</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-red" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="SRE 知识库" class="md-header__button md-logo" aria-label="SRE 知识库" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SRE 知识库
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第9章 · 可观测性与监控
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-red" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-red" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ForceInjection/google-sre-book" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ForceInjection/google-sre-book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part1/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅰ 背景与脉络
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part2/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅱ 社会技术基石
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅲ 态势感知与备战
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part4/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅳ 基础设施设计
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part5/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅴ 韧性与平台
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part6/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ⅵ 展望
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../appendices/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  附录
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SRE 知识库" class="md-nav__button md-logo" aria-label="SRE 知识库" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg>
+
+    </a>
+    SRE 知识库
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ForceInjection/google-sre-book" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ForceInjection/google-sre-book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    首页
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    导读
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part1/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅰ 背景与脉络
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅰ 背景与脉络
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/ch01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第1章 绪论
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/ch02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第2章 可靠性的商业价值
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/ch03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第3章 生产环境的演进趋势
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part2/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅱ 社会技术基石
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅱ 社会技术基石
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第4章 文化土壤
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第5章 招聘与职业发展
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第6章 组织架构
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/ch07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第7章 协作模式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅲ 态势感知与备战
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅲ 态势感知与备战
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第8章 SLO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    第9章 可观测性与监控
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    第9章 可观测性与监控
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      本章脑图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      核心概念
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      关键论点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例研究速览
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      关键数字
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践要点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      与第1版的关系
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      交叉引用
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第10章 应急与轮值
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第11章 从事故中学习
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第12章 STPA 与 CAST
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part4/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅳ 基础设施设计
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅳ 基础设施设计
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part4/ch13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第13章 自动化与工具
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part4/ch14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第14章 测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part4/ch15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第15章 容量规划
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part4/ch16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第16章 数据管理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part5/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅴ 韧性与平台
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅴ 韧性与平台
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part5/ch17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第17章 面向韧性的系统设计
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part5/ch18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第18章 平台工程
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../part6/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Ⅵ 展望
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Ⅵ 展望
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第19章 转折点上的 SRE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第20章 SRE 赋能 AI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第21章 AI 赋能 SRE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第22章 多样化环境实践
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part6/ch23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    第23章 SRE 的未来
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../appendices/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    附录
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            附录
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录A 培训ROI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录B 章程模板
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录C 会议纪要
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录D gShoe章程
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录E 组合SLO数学
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-f/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录F 延迟告警数学
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/appendix-g/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    附录G 可观测性统计
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      本章脑图
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      核心概念
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      关键论点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例研究速览
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      关键数字
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践要点
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      与第1版的关系
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      交叉引用
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="9">第9章 · 可观测性与监控<a class="headerlink" href="#9" title="Permanent link">#</a></h1>
+<blockquote>
+<p>[!INFO] 出处
+《SRE：Google 运维解密（第2版）》第Ⅲ部分 · 第9章 · 撰稿：Alex Bramley、Amber Hillhouse、Boris Arnoux 等 21 人（合著：Carmela Quinito）</p>
+</blockquote>
+<p><strong>一句话概括</strong>：从"以指标为中心的监控"走向"以洞察为中心的可观测性"——统一插桩（OpenTelemetry/eBPF）、高可用与分析型双轨遥测、客户端遥测、以 CUJ 为核心的客户监控，再以统计学驯服噪声、以 AI 迈向主动监控与自愈。</p>
+<h2 id="_1">本章脑图<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<div id="map-part3-ch09-md" style="width:100%;height:260px;"></div>
+
+<script src="../../js/echarts.min.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('map-part3-ch09-md');
+  if (!el || typeof echarts === 'undefined') return;
+  var data = {"name":"Ch9 可观测性与监控","symbolSize":13,"children":[{"name":"演进路径","symbolSize":8,"children":[{"name":"开箱即用仪表盘","symbolSize":5},{"name":"智能告警对症状","symbolSize":5},{"name":"自动化缓解自愈","symbolSize":5}]},{"name":"遥测双轨","symbolSize":8,"children":[{"name":"高可用 亚秒级","symbolSize":5},{"name":"分析型 深度洞察","symbolSize":5},{"name":"统一接口屏蔽差异","symbolSize":5}]},{"name":"数据采集演进","symbolSize":8,"children":[{"name":"OpenTelemetry 五原则","symbolSize":5},{"name":"Waze 迁移案例","symbolSize":5},{"name":"eBPF 免插桩观测","symbolSize":5},{"name":"AI 系统可观测性","symbolSize":5}]},{"name":"客户端遥测","symbolSize":8,"children":[{"name":"端到端真实体验","symbolSize":5},{"name":"电量带宽存储代价","symbolSize":5},{"name":"隐私合规与扩展","symbolSize":5}]},{"name":"以客户为中心","symbolSize":8,"children":[{"name":"CUJ 目标任务分层","symbolSize":5},{"name":"故障分钟组合 SLO","symbolSize":5},{"name":"Google 地图案例","symbolSize":5}]},{"name":"统计学与 AI","symbolSize":8,"children":[{"name":"基数噪声二项告警","symbolSize":5},{"name":"同期群 z 分数","symbolSize":5},{"name":"AI 异常检测去琐事","symbolSize":5}]}]};
+  var COLOR = '#29b6f6';
+  function fg() {
+    var v = getComputedStyle(document.body).getPropertyValue('--md-default-fg-color').trim();
+    return v || 'rgba(0,0,0,0.87)';
+  }
+
+  // 容器高度随展开状态自适应：可见行数 x 行高
+  var ROW = 30, PAD = 46;
+  function markInitial(node, depth) {
+    if (depth >= 2) node.__collapsed = true;
+    if (node.children) node.children.forEach(function (c) { markInitial(c, depth + 1); });
+  }
+  markInitial(data, 0);
+  function visibleRows(node) {
+    if (!node.children || !node.children.length || node.__collapsed) return 1;
+    var s = 0;
+    for (var i = 0; i < node.children.length; i++) s += visibleRows(node.children[i]);
+    return s;
+  }
+  function fit() {
+    var h = Math.max(160, visibleRows(data) * ROW + PAD);
+    if (Math.abs(parseFloat(el.style.height) - h) > 1) {
+      el.style.height = h + 'px';
+      chart.resize();
+    }
+  }
+
+  var chart = echarts.init(el);
+  function render() {
+    chart.setOption({
+      backgroundColor: 'transparent',
+      animation: true,
+      animationDurationUpdate: 220,
+      animationEasingUpdate: 'cubicOut',
+      series: [{
+        type: 'tree',
+        data: [data],
+        layout: 'orthogonal',
+        orient: 'LR',
+        roam: false,
+        expandAndCollapse: true,
+        initialTreeDepth: 1,
+        symbol: 'circle',
+        lineStyle: { width: 1.2, color: COLOR, opacity: 0.55 },
+        itemStyle: { color: COLOR, borderColor: 'transparent' },
+        emphasis: { focus: 'descendant', lineStyle: { width: 2.2 } },
+        label: { color: fg(), fontSize: 12, position: 'right', distance: 6 },
+        right: '22%'
+      }]
+    });
+    fit();
+  }
+  render();
+  chart.on('click', function (p) {
+    var d = p.data;
+    if (d && d.children && d.children.length) d.__collapsed = !d.__collapsed;
+    setTimeout(fit, 300);
+  });
+  chart.on('finished', fit);
+  new MutationObserver(render).observe(document.body, { attributes: true, attributeFilter: ['data-md-color-scheme'] });
+})();
+</script>
+
+<h2 id="_2">核心概念<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>术语（EN）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可观测性</td>
+<td>Observability</td>
+<td>从时序、日志、追踪、持续性能剖析四类数据源中提炼洞察的工程学科</td>
+</tr>
+<tr>
+<td>宽结构化事件</td>
+<td>Wide structured events</td>
+<td>Google 通过日志事件机制捕获的高细粒度上下文事件</td>
+</tr>
+<tr>
+<td>持续性能剖析</td>
+<td>Continuous Profiling</td>
+<td>对代码执行情况的实时分析，识别性能瓶颈与资源消耗模式</td>
+</tr>
+<tr>
+<td>高可用遥测</td>
+<td>High-availability telemetry</td>
+<td>亚秒到秒级延迟，支撑告警、控制回路与应急响应；宁弃完整性保可用</td>
+</tr>
+<tr>
+<td>分析型遥测</td>
+<td>Analytics telemetry</td>
+<td>允许数秒到数分钟延迟，支撑趋势、容量、审计等深度分析；完整性优先</td>
+</tr>
+<tr>
+<td>OpenTelemetry</td>
+<td>OTel</td>
+<td>开放可观测性标准：OTLP 协议、Collector、API 与开箱即用插桩库</td>
+</tr>
+<tr>
+<td>扩展型伯克利包过滤器</td>
+<td>eBPF</td>
+<td>在内核挂钩采集信号，无需修改应用或做专门配置</td>
+</tr>
+<tr>
+<td>缓解/检测/恢复耗时</td>
+<td>TTM / TTD / TTR</td>
+<td>应急关键指标；TTM 从客户视角发现问题算起，其下降带动 TTR 下降</td>
+</tr>
+<tr>
+<td>关键用户交互</td>
+<td>Critical User Interactions (CUI)</td>
+<td>极高频或不可或缺、工程上绝不容有失的操作，构成 CUJ 的基石</td>
+</tr>
+<tr>
+<td>功能性/非功能性需求</td>
+<td>FR / NFR</td>
+<td>描述产品稳态功能与非交互行为的规格，补充 CUJ 清单</td>
+</tr>
+<tr>
+<td>水平监控数据</td>
+<td>Horizontal Monitoring Data (HMD)</td>
+<td>Google 对通用时序数据的集中托管：统一采集、配额规划与预算编制</td>
+</tr>
+<tr>
+<td>同期群</td>
+<td>Cohort</td>
+<td>预期特性相似的一组工作负载，用其历史分布（均值/标准差）建立相对基准</td>
+</tr>
+<tr>
+<td>请求对冲</td>
+<td>Request hedging</td>
+<td>同时向多个后端发相同请求、取最先成功者，用冗余换取可用性</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">关键论点<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>传统监控过度依赖人</strong>：靠资深值班"传帮带"、人工关联孤立数据点、人工剔除"障眼法"（red herrings）、反复迭代才得出结论。四个黄金指标（延迟、流量、错误、饱和度）只是切入点，真正的洞察来自在技术栈全局上下文中整合与诠释信号。</li>
+<li><strong>可观测性的四大数据支柱</strong>是时序数据、日志（含宽结构化事件）、分布式追踪与持续性能剖析，由 OpenTelemetry 与 eBPF 等框架支撑统一插桩。它大幅降低诊断对"先验经验与深层系统理解"的依赖；演进方向是生产知识图谱与资产分类体系（数据湖之上的"智能索引"）、跨资产灵活查询，以及 AI/ML 辅助事故调查。</li>
+<li><strong>三大演进策略</strong>：开箱即用的仪表盘（Monarch 自动发现服务、按探索语境动态生成仪表盘，共享语境消除口径矛盾——但百万到万亿量级的高基数仍是硬挑战）；智能化告警（对症状而非原因告警，用统计/机器学习基线取代"一刀切"静态阈值，Google 为所有服务自动配置的通用告警已占 SRE 告警总量的近五分之一）；自动化缓解（告警触发后动态生成专属仪表盘与应急预案，自动回滚、扩容、切流，走向预测性缓解与自愈智能体）。</li>
+<li><strong>遥测必须双轨并行</strong>：高可用遥测追求低延迟、高吞吐、高可靠、轻量处理，优先处理最新数据而非 FIFO，为告警与控制回路服务（Prometheus、Monarch）；分析型遥测构建在廉价存储之上、容忍激进降采样，为深度分析服务（BigQuery）。工程师不应被迫维护两套体验——用单一客户端库、一致配置框架与统一查询端点屏蔽后端差异。</li>
+<li><strong>标准化是层级结构的必然</strong>：Google 在 Search、YouTube、Cloud 等规模最大的产品上强制标准化可观测性工具链，同时允许 Waze 等 SRE 团队保持独立。评估新产品四问：维护是否活跃？是否遵循行业标准（CNCF 背书）？能否跨平台一致使用？不采用会有什么后果？</li>
+<li><strong>OpenTelemetry 诞生于教训</strong>：Google 自研路线发现，遥测的生成与采集始终是最挑战、最顽固的痛点，遂基于 OpenCensus（后与 OpenTracing 合并）的经验与业界共创 OTel。五大设计原则：开放、可扩展、可关联、通用、松耦合；在三个层面提供关联——运行时（resource 属性）、因果（上下文传播与 baggage 行李标签）、源码（堆栈跟踪与插桩范围）。</li>
+<li><strong>eBPF 免插桩观测的机遇与代价</strong>：借助内核挂钩即可采集日志（Groundcover、Traceable）、性能剖析（Parca、OTel profiling）、网络指标（Cilium/Hubble、Grafana Beyla）、分布式追踪（Odigos、DeepFlow）与请求级成本归因（Attrib.io）；但其高性能与易集成，需与成熟插桩方案的灵活性和深度洞察做权衡，且常需内核权限。</li>
+<li><strong>客户端遥测补上端到端视角</strong>：它能揭示后端完全不可见的故障——负载均衡器或 DNS 故障、SSL 证书过期、被重试掩盖的失败、API 协议不兼容、移动端崩溃——并度量用户感知的真实延迟、保障安全发布。约束同样是体验：电量、带宽、存储配额与服务条款；本地缓冲批量上传带来时钟偏差、配额丢弃与分析偏差，必须量化记录丢失、建立"误差范围"。</li>
+<li><strong>以客户为中心的监控纠正"成功地失败"</strong>：系统中心 SLI 可能在用户无法完成任务时依然全绿（邮件服务器完美运行、客户端"发送"按钮却禁用失效）。CUJ 分层 = 目标（goal，不可插桩）→ 任务（task，可由日志派生）→ 交互 → 插桩（Server/Client/端到端 SLI）→ SLO；用"故障分钟数"把多个 CUI 聚合成 CUJ 级 SLO；请求经 RFC 带外通道传递追踪上下文，让服务能匿名打上 CUJ 标签——CUJ 从此成为切分可观测性数据的又一个维度。</li>
+<li><strong>CUJ 框架需要集中式基础设施</strong>：一个"唯一事实来源"（single source of truth）存储 CUJ、CUI、用户目标等产品规格，并以库/SDK 形式铺就标准化采集坦途；与 SLO repository 层级视图打通后，CUJ 停止阶段或触发告警时可立即呈现跨产品依赖关系。高基数健壮遥测存储是 AI 优化 SLO 与检测细微异常的前提。</li>
+<li><strong>数据价值与成本需精打细算</strong>：配额与费用分摊（chargeback）约束无节制保留；数据效用随时间衰减——实时应急要高分辨率，长期趋势可用降采样；预计算（standing queries）既缩减总量又提升常见分析性能。Google 的水平监控数据（HMD）以分钟级粒度采集、内存保留数小时、磁盘保留数周，预计算数据以 30 分钟降采样在磁盘保留数年；各团队主动跟踪成本利用率并定期评审留存策略。</li>
+<li><strong>隐私合规要"原生合规设计"</strong>：遵循 GDPR/CCPA 等法规，分类分级沿数据链路传递；聚合不等于匿名（区域内唯一客户仍可归因），必要时按字段细分、拆分独立"分片"（欧盟《数字市场法》第 5(2) 条对跨产品合并个人数据甚至是硬性要求）；落实数据最小化、驻留本地化、彻底清除（追踪与文本日志短期即删、结构化日志可更长、时序细粒度短留/聚合匿名可长留）、细粒度 ACL 与客户托管加密密钥（CMEK）。端到端风险同样要管：客户端内存可被提取、collector 可路由数据、大组织过度共享——统一 SDK、Borg 二进制授权（BAB）与 Notary/Sigstore 制品验证是集中化防线。</li>
+<li><strong>统计学是监控数据的世界观</strong>：采样与聚合必然损失信息，监控只是"不完美的透镜"。高基数切分告警会产生噪声（仅 20 次请求的客户端遇瞬时抖动，错误率即飙至 5%）；改用二项比例置信区间，只在下界超过不可接受错误率时告警，即可自适应流量、消除低流量误报。组合 SLO 则提醒：串行 fail-close 调用 80%×90% 的上限是 72%，请求对冲理论上可到 98%——但一切计算都假设故障独立，共享上游的相关性可能恶化也可能改善结果。</li>
+<li><strong>延迟告警应相对而非绝对</strong>："慢"没有放之四海的普适阈值，与其问"这个查询慢不慢"，不如问"它是否比平时更慢"——把负载归入同期群（按 RPC 方法、客户 ID、总体结构等分组），用历史均值与标准差（z 分数）检测离群"异常激增"，既可跨产品比较，又免于维护上万个随意阈值。这实际上是为负载创建了隐式 SLO。</li>
+<li><strong>可观测性与 AI 互相成就</strong>：海量、庞杂的遥测数据集是 AI 提炼洞察的理想温床。AI 已被证明卓有成效的领域：主动监控（异常检测驱动的即席查询与上下文感知仪表盘、"大海捞针"捕获某地域特定用户任务的微小持续延迟、关联客服与社交媒体反馈推断严重程度）；消除琐事（LLM 生成配置与查询、内容摘要辅助撰写复盘）；机器辅助目前聚焦排查阶段并保持人在回路（human-in-the-loop），SRE 角色正从"数据侦探"转向"系统战略家"，终局是自愈（self-healing）——这要求极其健壮且高度可靠的解决方案，防止 AI 做出非预期破坏性变更。</li>
+</ol>
+<h2 id="_4">案例研究速览<a class="headerlink" href="#_4" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>案例</th>
+<th>启示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Waze 遥测系统演进</td>
+<td>自研库 → OpenCensus → OpenTelemetry，迁移预计耗时一年以上；多套系统并存期困惑与琐事成本高昂——可观测性选型是"管十年"的决策</td>
+</tr>
+<tr>
+<td>YouTube 视频上传</td>
+<td>服务端 API 可用性指标一直很漂亮，用户反馈却大相径庭；把插桩从 API 层移到客户端设备，才发现真实体验明显糟糕</td>
+</tr>
+<tr>
+<td>Google 地图无搜索结果</td>
+<td>月活超 20 亿；RPC 监控捕获不了"successfully fails"，改用"客户能看到非空、有效的搜索结果"这一不变条件监控；Code Yellow 期间以 CUJ 变更监督作为发布准入门槛，自动阻断推高无结果概率的发布</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">关键数字<a class="headerlink" href="#_5" title="Permanent link">#</a></h2>
+<ul>
+<li>Google 为所有服务统一配置的通用告警，已占 SRE 处理告警总量的近 1/5。</li>
+<li>高基数时间序列：维度唯一值从数百万到数万亿量级，现有指标平台难以招架。</li>
+<li>OpenTelemetry 2025 年位列顶级 CNCF 项目，与 Kubernetes 齐名。</li>
+<li>遥测时延分界：高可用遥测亚秒到数秒；分析型遥测数秒到数分钟甚至更长。</li>
+<li>组合 SLO：串行依赖 80%×90% 数学上限 72%；并行对冲理论上可达 98%（假设故障独立）。</li>
+</ul>
+<h2 id="_6">实践要点<a class="headerlink" href="#_6" title="Permanent link">#</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 优先采用自动发现 + 开箱即用仪表盘，摆脱逐微服务手工建盘的琐事；但记住高基数场景仍需另行设计</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 告警对症状不对原因；低流量场景改用二项比例置信区间下界触发，替代硬编码阈值</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 区分高可用遥测与分析型遥测两条流水线，但对用户只暴露单一客户端库、统一配置框架与查询端点</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 选型先过四问（维护活跃度、行业标准/CNCF 背书、跨平台一致性、不采用的后果），并收敛到 OpenTelemetry</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 客户端插桩先算体验账：电量、带宽、存储配额、服务条款；本地缓冲批量上传，上传前先评估网络可用性</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 量化遥测记录丢失（上报丢弃数量与原因），为分析建立可信的"误差范围"</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 用 CUJ/CUI/FR/NFR 建立产品规格的唯一事实来源，以库/SDK 形式铺好标准化采集坦途</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 数据按敏感级分类分级并沿链路传递；PII 脱敏；把驻留、清除、加密（CMEK）与细粒度 ACL 做进架构而非事后补救</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 制定分层留存策略：原始数据内存短窗、聚合降采样长存；定期评审留存策略与配额利用率</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 对延迟等无绝对基准的指标，按同期群做相对监控（z 分数），而非维护海量静态阈值</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 引入 AI 辅助异常检测与查询生成，保持人在回路；逐步把 SRE 精力转向解读洞察与高层决策</li>
+</ul>
+<h2 id="1">与第1版的关系<a class="headerlink" href="#1" title="Permanent link">#</a></h2>
+<ul>
+<li>第1版以"四个黄金指标 + 为症状而非原因告警"奠定了监控方法论；本章将其扩展为完整的可观测性学科：新增持续性能剖析、高可用/分析型双轨遥测架构、OpenTelemetry 与 eBPF 采集生态、客户端遥测与 CUJ 监控，并把统计学与 AI 嵌入告警、排查与复盘全流程。</li>
+</ul>
+<h2 id="_7">交叉引用<a class="headerlink" href="#_7" title="Permanent link">#</a></h2>
+<ul>
+<li>SLI/SLO 定义、隐式 SLO 与单客户 SLO → <a href="../ch08/">第8章</a></li>
+<li>告警策略、轮值与应急响应（TTM 的落地场景） → <a href="../ch10/">第10章</a></li>
+<li>自动化开发与琐事消除原则 → <a href="../../part4/ch13/">第13章</a></li>
+<li>平台工程、收敛与"黄金路径" → <a href="../../part5/ch18/">第18章</a></li>
+<li>ML/AI 工作负载的运维（TPU 容量、goodput） → <a href="../../part6/ch20/">第20章</a></li>
+<li>从确定性自动化到"SRE AI"的演进 → <a href="../../part6/ch21/">第21章</a></li>
+<li>组合 SLO（串行/对冲）的具体计算 → <a href="../../appendices/appendix-e/">附录E</a></li>
+<li>延迟告警与同期群 z 分数的数学 → <a href="../../appendices/appendix-f/">附录F</a></li>
+<li>二项置信区间等可观测性统计学 → <a href="../../appendices/appendix-g/">附录G</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../ch08/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第8章 SLO">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                第8章 SLO
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../ch10/" class="md-footer__link md-footer__link--next" aria-label="下一页: 第10章 应急与轮值">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                第10章 应急与轮值
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      <span style="font-size:0.75rem">访问计数 <a href="https://hits.sh/forceinjection.github.io/google-sre-book/"><img
+  src="https://hits.sh/forceinjection.github.io/google-sre-book.svg?style=flat-square"
+  alt="Hits" style="vertical-align:middle;margin-left:4px"></a></span>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
