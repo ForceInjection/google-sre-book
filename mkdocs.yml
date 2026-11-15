@@ -33,6 +33,12 @@ theme:
   icon:
     logo: material/book-open-variant
 
+copyright: >
+  <span style="font-size:0.75rem">访问计数
+  <a href="https://hits.sh/forceinjection.github.io/google-sre-book/"><img
+    src="https://hits.sh/forceinjection.github.io/google-sre-book.svg?style=flat-square"
+    alt="Hits" style="vertical-align:middle;margin-left:4px"></a></span>
+
 plugins:
   - search:
       lang: zh
